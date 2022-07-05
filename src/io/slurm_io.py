@@ -182,44 +182,6 @@ def base_PVSBraincommandline(lpvs=200e-4, mesh='regular', Emem=10e4, E=10e4, K=1
 
 
 
-def write_cycle_slurm(jobname, cycle, outputfolder, file, **kargs) :
-    """
-    Function to write a slurm file with the proper command line to launch a simulation of successive oscillation cycles.
-
-
-    Parameters
-    ----------
-    jobname : STRING
-        name of the job : will be used as label for the outputfiles.
-    cycle : STRING
-        name of the oscillations cycles to simulate. Must be defined in the cycles.yml file.
-    file : STRING
-        name of the slurm file to create.
-
-
-    Returns
-    -------
-    None. The function creates a file.
-
-    """
-    
-    
-    jobcommand=base_commandline(**kargs)
-    jobcommand+=' -j '+jobname
-    jobcommand+=' -cycle '+cycle
-    
-    jobcommand+=' -o '+outputfolder
-    
-    slurm_template=get_slurmtemplate(jobname)
-    
-    with open(file, 'w') as f:
-        for line in slurm_template :
-            f.write(line)
-        f.write('\n')
-        f.write(jobcommand)
-        
-    f.close()
-    
 def write_state_slurm(jobname, fi, ai, rv, h0, outputfolder, file, **kargs) :
     """
     Function to write a slurm file with the proper command line to launch a simulation of a given oscillatory state.
@@ -274,57 +236,3 @@ def write_state_slurm(jobname, fi, ai, rv, h0, outputfolder, file, **kargs) :
         
     f.close()
     
-
-def write_PVSBrain_slurm(jobname, fi, ai, rv, h0, outputfolder, file, **kargs) :
-    """
-    Function to write a slurm file with the proper command line to launch a simulation of a given oscillatory state.
-
-
-    Parameters
-    ----------
-    jobname : STRING
-        name of the job : will be used as label for the outputfiles.
-    fi: LIST of FLOAT
-        provides the frequencies (Hz) of the oscillations to be superposed
-    ai: LIST of FLOAT
-        provides the amplitudes (ratio) of the oscillations to be superposed
-    Rv: FLOAT
-        vessel mean radius (cm)
-    h0: FLOAT
-        PVS mean thickness (cm)
-    file : STRING
-        name of the slurm file to create.
-    
-
-    Returns
-    -------
-    None. The function creates a file.
-
-    """
-    
-    
-    jobcommand=base_PVSBraincommandline(**kargs)
-    jobcommand+=' -j '+jobname
-    jobcommand+=' -ai '
-    
-    for a in ai :
-        jobcommand+=str(a)+' ' 
-        
-    jobcommand+=' -fi '
-    for f in fi :
-        jobcommand+=str(f)+' ' 
-        
-    jobcommand+=' -rv '+str(rv)
-    jobcommand+=' -rpvs '+str(rv+h0)
-    
-    jobcommand+=' -o '+outputfolder
-    
-    slurm_template=get_slurmtemplate(jobname,templatefile='templategmsh.slurm')
-    
-    with open(file, 'w') as f:
-        for line in slurm_template :
-            f.write(line)
-        f.write('\n')
-        f.write(jobcommand)
-        
-    f.close()
