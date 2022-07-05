@@ -292,7 +292,7 @@ for study in studylist :
                 #check for nan values
                 for tracelabel in traces :
                     if sum(np.isnan(traces[tracelabel]))<len(traces[tracelabel]) :
-                        traces[tracelabel],nans=remove_nan(traces[tracelabel])
+                        traces[tracelabel],nans=da.remove_nan(traces[tracelabel])
                               
                 vessel,nans=da.remove_nan(vessel)
                 signal,nans=da.remove_nan(signal)
