@@ -1,3 +1,5 @@
+# @author: Miroslav Kuchta
+
 import sleep.fbb_DD.cylindrical as cyl
 from dolfin import *
 from functools import reduce
