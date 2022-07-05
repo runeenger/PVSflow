@@ -19,6 +19,7 @@ RUN pip3 install --user numpy==1.18 && \
     pip3 install --user pandas && \
     pip3 install --user scipy==1.1.0 && \
     pip3 install --user regex && \
+    pip install --user scikit-learn && \
     pip3 install --user matplotlib 
 
 

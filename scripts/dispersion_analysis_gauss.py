@@ -4,6 +4,9 @@
 Created on Thu Sep 23 11:15:51 2021
 
 @author: alexandra
+
+compute the apparent diffusion coefficient from the simulated profile of concentration in the PVS.
+
 """
 
 import matplotlib.pyplot as plt
@@ -15,31 +18,12 @@ import shutil
 
 from os import path
 
-# todo : create a library for the functions
+from src.toolbox import U
 
-
-def fA(t, a, f, phi=0, Rv0=8e-4, h0=2e-4) :
-    w=2*np.pi*f
-    Av0=np.pi*Rv0**2
-    Aast0=np.pi*(Rv0+h)**2
-    A0=Aast0-Av0
-    return A0*(1+a*np.sin(w*t+phi*2*np.pi))
-
-def fdAdt(t, a, f, phi=0, Rv0=8e-4, h0=2e-4) :
-    w=2*np.pi*f
-    Av0=np.pi*Rv0**2
-    Aast0=np.pi*(Rv0+h)**2
-    A0=Aast0-Av0
-    return A0*(w*a*np.cos(w*t+phi*2*np.pi))
-
-def fQ (s, t, a, f, l, phi=0, Rv0=8e-4, h0=2e-4) :
-    return -fdAdt(t, a, f, phi, Rv0,h0)*(s-l)
-
-def U (s, t, a, f, l,  phi=0, Rv0=8e-4, h0=2e-4) :
-    return fQ(s, t, a, f, l, phi, Rv0, h0)/fA( t, a, f, phi, Rv0, h0)
-
-# compute FWHM using the roots of a fitted spline
 from scipy.interpolate import UnivariateSpline
+from sklearn import linear_model
+from scipy.optimize import curve_fit
+from sklearn.metrics import mean_squared_error, r2_score
 
 def FWHM(X,Y):
     spline = UnivariateSpline(X, Y-np.max(Y)/2, s=0)
@@ -55,8 +39,6 @@ def FWHM(X,Y):
     
     return fwhm
 
-
-from sklearn import linear_model
 
 # With only one linear fit 
 def estimate_diff_FWHM_fit(spanTime,spanFWHM) :
@@ -95,9 +77,6 @@ def estimate_diff_FWHM_slope(spanTime,spanFWHM) :
 def gaussian (x,t,s,D,L,xi) :
     return s/sqrt(2*D*t)*np.exp(-(x-xi)**2/(4*D*t))
 
-from scipy.optimize import curve_fit
-from sklearn.metrics import mean_squared_error, r2_score
-
 
 def estimate_diff_fit(spanC,spanX,t,sigma,L) :
     
@@ -117,11 +96,28 @@ def estimate_diff_fit(spanC,spanX,t,sigma,L) :
         
     return D,xi, err
 
+##########################################################
+### Parameters of the script : can be modified
+##########################################################
 
-# set a condition on time analysis to stay in 1D in the PVS
+# localisation of the simulation folder
+rep='../data/simulations/'
+analysis='-d7e-08-l6e-02'  # chose different length or diffusion coefficient if needed
+rep=rep+'dispersionRandomWT10'+analysis+'/'
+
+# name of the output file
+outputname='RandomWT10.csv'
+
+
+# set a condition on time analysis so that the boundary conditions do not
 conditiontime=True
 conditionalpha=True
 
+
+
+##########################################################
+### script
+##########################################################
 
 #Creation of the database
 Database=[]
@@ -131,12 +127,6 @@ datalabel=['job','stage','bandname','vesselID', 'Rv0', 'Rpvs', 'L', 'DX', 'dt', 
 
 file='concentration.txt'
 
-rep='/home/alexandra/Data/SleepOutput/'
-analysis='-d7e-08-l6e-02'
-rep=rep+'dispersionRandomWT10t40area'+analysis+'/'
-outputname='RandomWT10.csv'
-
-#dispersionRandomWT7t20area-d2e-07-l6e-02/
 
 # get all the log files
 from os import listdir
