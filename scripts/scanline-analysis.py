@@ -39,7 +39,8 @@ from scipy.stats import pearsonr
 
 import regex as re
 
-
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 ##########################################################
@@ -173,7 +174,8 @@ for study in studylist :
     
 
     for linescan in linescanlist :
-        
+
+                
         # Global spectrum
         signal=data[linescan][:].values
         
@@ -255,6 +257,8 @@ for study in studylist :
         for sequence in seqlist:
             
             for linescan in linescanlist :
+
+                print('Analysis of '+linescan)
                 
                 if np.isnan(data[linescan][0]) :
                     continue
