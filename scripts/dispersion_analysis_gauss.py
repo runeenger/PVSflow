@@ -103,7 +103,7 @@ def estimate_diff_fit(spanC,spanX,t,sigma,L) :
 # localisation of the simulation folder
 rep='../data/simulations/'
 analysis='-d7e-08-l6e-02'  # chose different length or diffusion coefficient if needed
-rep=rep+'dispersionRandomWT10'+analysis+'/'
+rep=rep+'dispersionRandomWT10t40area'+analysis+'/'
 
 # name of the output file
 outputname='RandomWT10.csv'
@@ -177,7 +177,7 @@ for stage in stages :
             print('*** Analysis of :'+job)
             
             
-            outputfolder='/home/alexandra/Documents/Python/linescan-analysis/output/disp_analysis/'+job+'/'
+            outputfolder='../output/disp_analysis/'+job+'/'
             
             if not os.path.exists(outputfolder):
                 os.makedirs(outputfolder)
@@ -314,7 +314,7 @@ for stage in stages :
             
             
             iperiodic=(np.arange(ishift,len(t),max(1,round(T/dtoutput))))
-            iperiodicumax=(np.arange(round(T/dtoutput*1/2),len(t),max(1,round(T/dtoutput))))
+            iperiodicumax=(np.arange(round(T/dtoutput*1/2),len(t),max(1,round(T/dtoutput)))).astype(int)
             
             plt.figure()
             plt.plot(np.max(velocity,axis=1))
