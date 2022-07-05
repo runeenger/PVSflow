@@ -3,7 +3,7 @@
 ##################################
 
 
-def get_slurmtemplate (jobname,templatefile='template.slurm'):
+def get_slurmtemplate (jobname,templatefile='../src/io/template.slurm'):
     
     
     with open(templatefile, 'r') as f:

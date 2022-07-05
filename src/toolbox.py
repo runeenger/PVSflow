@@ -1,3 +1,10 @@
+################################
+### Some tools
+##################################
+
+
+import numpy as np
+
 def stokeeinstein(radius,kb=1.3806488e-23 , Tcelsius= 35, viscosity=0.693e-3 ):
     """
     Compute the diffusion coefficient from the radius of the particle using the stokes-einstein relationship.

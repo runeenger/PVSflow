@@ -23,8 +23,8 @@ import time
 
 
 from src.toolbox import U
-from src.io.slurm_io import get_slurmtemplate,
-
+from src.io.slurm_io import get_slurmtemplate,base_PVSBraincommandline, write_state_slurm
+from src.io.statistics_reader import ReadRandomEffect
 
 # Physical properties
 # The molecular dimensions of some Dextran fractions
@@ -80,11 +80,6 @@ if __name__ == '__main__':
     ### Parameters of the script : can be modified
     ##########################################################
 
-
-    # factor to be used on the PVS thickness h0, or the area (normally should be 1)
-    corrfactorh0=1
-    corrfactorarea=1
-    
     # We would like to cover those parameters range
     # Length of the PVS
     spanlpvs=[200e-4,400e-4]  
@@ -92,6 +87,13 @@ if __name__ == '__main__':
     spandiffusion=[0.84e-7*2,0.068e-6]
     # Assumption for the cardiac peak velocity
     spanVcard=[1e-4,10e-4,50e-4,100e-4]
+    
+    # factor to be used on the PVS thickness h0, or the area (normally should be 1)
+    corrfactorh0=1
+    corrfactorarea=1
+    
+    # Boolean to print some verification about the time parameters
+    Checkdt= True
 
 
     ##########################################################
@@ -118,11 +120,12 @@ if __name__ == '__main__':
 
     if not os.path.exists(seriename):
         os.makedirs(seriename)
-    seriedir='../output/supercomputer/+'seriename+'/' 
+        
+        
+    seriedirroot='../output/supercomputer/'+seriename+'/'
     
-       
     # awake data
-    folder='data/statistics/penetrating_arterioles_WT10/'
+    folder='../data/statistics/penetrating_arterioles_WT10/'
     vessel='PenetratingArterioles'
     mouse='WT10_'
     analysis='wake_'
@@ -224,9 +227,9 @@ if __name__ == '__main__':
             serie=seriename+'-d%.0e'%d+'-l%.0e'%lpvs
     
             # create a folder for the slurm files and the batch file
-            if not os.path.exists(serie):
-                os.makedirs(serie)
-                seriedir=serie+'/'
+            if not os.path.exists(seriedirroot+serie):
+                os.makedirs(seriedirroot+serie)
+                seriedir=seriedirroot+serie+'/'
     
             
             slurmfiles=[]
@@ -235,7 +238,7 @@ if __name__ == '__main__':
                     
                 ### We generale area deformation for the cardiac FB in order to impose the velocity
                     
-                # treat the cardiac time scale
+                # process the cardiac time scale
                 # We assume the value of the velocity due to cardiac pulsation
                 for vcard in spanVcard:
                     #Umax = a w L . we fix L and take w from measurement. 
@@ -335,9 +338,6 @@ if __name__ == '__main__':
                         # #gaussian analysis
                         write_state_slurm(jobname, [fi],[ai],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
                         
-                        # #intake
-                        #write_state_slurm(jobname, [fi],[ai],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=True)                              
-                  
                         # #update the list of slurm files to be launched in batch
                         slurmfiles.append(slurmfile)
                         
@@ -628,7 +628,9 @@ if __name__ == '__main__':
 
     if not os.path.exists(seriename):
         os.makedirs(seriename)
-    seriedir='../output/supercomputer/+'seriename+'/' 
+        
+        
+    seriedirroot='../output/supercomputer/'+seriename+'/' 
 
     for lpvs in spanlpvs:
         for d in spandiffusion :
@@ -641,9 +643,9 @@ if __name__ == '__main__':
             serie=seriename+'-d%.0e'%d+'-l%.0e'%lpvs
     
             # create a folder for the slurm files and the batch file
-            if not os.path.exists(serie):
-                os.makedirs(serie)
-                seriedir=serie+'/'
+            if not os.path.exists(seriedirroot+serie):
+                os.makedirs(seriedirroot+serie)
+                seriedir=seriedirroot+serie+'/'
     
             import time
             
