@@ -1,6 +1,6 @@
 # linescan-analysis
 
-Script for the post-processing of line-scan measurements of vessels diameter oscillations.
+Script for the post-processing of line-scan measurements of vessels and astrocyte endfoot diameter oscillations.
 
 ## Usage
 
