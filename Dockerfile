@@ -15,9 +15,9 @@ RUN apt-get update && \
     apt-get install -y libglu1 libxft2 libxcursor-dev libxinerama-dev && \
     apt-get install -y libx11-dev bison flex automake libtool libxext-dev libncurses-dev python3-dev xfonts-100dpi cython3 python3-scipy make zlib1g-dev 
 
-RUN pip3 install --user numpy && \
+RUN pip3 install --user numpy==1.18 && \
     pip3 install --user pandas && \
-    pip3 install --user scipy && \
+    pip3 install --user scipy==1.1.0 && \
     pip3 install --user regex && \
     pip3 install --user matplotlib 
 
