@@ -28,6 +28,12 @@ Download the simulation results data archive :
 Untar them in the data/simulations folder
 
 
+### Setup the python path
+
+execute the command line : source setup.rc
+
+
+
 ### Peak to peak analysis
 
 The main script to generate the database containing the peak to peak features is 
