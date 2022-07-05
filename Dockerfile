@@ -1,6 +1,7 @@
 FROM quay.io/fenicsproject/dev:latest
 
-ENV GMSH_FOLDER="gmsh-4.4.1-Linux64-sdk"
+ENV GMSH_VERSION="gmsh-4.4.1"
+ENV GMSH_FOLDER=""$GMSH_VERSION"-Linux64-sdk"
 ENV GMSH_URL="http://gmsh.info/bin/Linux/"$GMSH_FOLDER".tgz"
 ENV PYTHONPATH=""
 
@@ -19,6 +20,7 @@ RUN pip3 install --user numpy && \
     pip3 install --user scipy && \
     pip3 install --user regex && \
     pip3 install --user matplotlib 
+
 
 USER fenics
 
@@ -42,7 +44,4 @@ ENV PYTHONPATH "${PYTHONPATH}:/home/fenics/ulfy"
 
 
 USER root
-
-  
-
 
