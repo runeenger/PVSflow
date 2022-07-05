@@ -72,6 +72,14 @@ The script to lauchn the simulation is scripts/PVS_simulation.py.
 
 It must be called with several arguments that describe the PVS geometry and arteriole pulsations. The command lines can be viewed at the end of the slurm files generated in the previous stage.
 
+For exemple a typical call for a simulations is 
+
+python3 PVS_simulation.py -lpvs 0.02 -c0init gaussian -c0valueSAS 0 -c0valuePVS 1 -sasbc scenarioA -tend 40 -toutput 0.20053738530806994 -dt 0.0015666983227192964 -r -1 -nr 8 -nl 200 -d 1.68e-07 -s 0.0002 -xi 0.01 -j disp-d2e-07-l2e-02-baseline-card-v1e-02-id0-6-5 -ai 0.007979129036625841  -fi 9.973202736874004  -rv 0.0004984156211725926 -rpvs 0.0006981850068656416 -o '../output/simulations/'
+
+You can look to the corresponding .log file in the output/simulations/ folder to check how the simulation is running.
+
+
+
 
 ### Dispersion analysis
 

@@ -1,6 +1,6 @@
 # @author: Miroslav Kuchta
 
-import sleep.fbb_DD.cylindrical as cyl
+import src.fem.cylindrical as cyl
 from dolfin import *
 from functools import reduce
 import itertools
