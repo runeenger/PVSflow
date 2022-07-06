@@ -25,6 +25,10 @@ from sklearn import linear_model
 from scipy.optimize import curve_fit
 from sklearn.metrics import mean_squared_error, r2_score
 
+import warnings
+warnings.simplefilter(action='ignore', category=RuntimeWarning)
+#todo : do not plot in the interface. Just save the figure.
+
 def FWHM(X,Y):
     spline = UnivariateSpline(X, Y-np.max(Y)/2, s=0)
     roots=spline.roots() # find the roots
@@ -313,9 +317,11 @@ for stage in stages :
             outputfile.write('\nspatial resotion : %.2e um'%(DX))
             
             
-            iperiodic=(np.arange(ishift,len(t),max(1,round(T/dtoutput))))
+            iperiodic=(np.arange(ishift,len(t),max(1,round(T/dtoutput)))).astype(int)
             iperiodicumax=(np.arange(round(T/dtoutput*1/2),len(t),max(1,round(T/dtoutput)))).astype(int)
             
+            print(iperiodic)
+
             plt.figure()
             plt.plot(np.max(velocity,axis=1))
             plt.plot(iperiodic,np.max(velocity[iperiodic],axis=1),'*r')
