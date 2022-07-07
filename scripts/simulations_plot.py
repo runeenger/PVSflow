@@ -10,6 +10,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import scipy as sp
 import numpy as np
+import os
 
 import seaborn as sbn
 from statannot import add_stat_annotation
@@ -24,7 +25,7 @@ import itertools
 file_name='../output/disp_analysis/disp-d7e-08-l6e-02RandomWT10.csv'
 
 # output folder
-outputfolder='/home/alexandra/Documents/Python/linescan-analysis/output/images/'
+outputfolder='../output/figures/'
 
 # selection of stages
 stages=['baseline','stageNREM','stageIS','stageREM','stageAwakening']
@@ -87,6 +88,10 @@ my_pal = {"baseline":"gray","stageREM": "darkorchid", "stageNREM": "mediumseagre
 ### script
 ##########################################################
 
+# Directory to store output data             
+if not os.path.exists(outputfolder):
+    os.makedirs(outputfolder)
+
 
 combis=list(itertools.combinations(list(np.unique(stages)), 2))
 
@@ -115,7 +120,7 @@ listvariables=['stage','bandname','vessel id','amp','f','Destfit','Rfit','u max 
 columnsname=['stage','frequency band name','vessel id','Oscillation amplitude (pc)','Oscillation frequency (Hz)','Effective diffusion coefficient','Enhancement factor R','Peak velocity (um/s)', 'Peak pressure (Pa)']
 
 
-data[listvariables].to_excel('../output/images/'+'table_'+length+diffusioncoef+'.xls', header=columnsname)
+data[listvariables].to_excel(outputfolder+'table_'+length+diffusioncoef+'.xls', header=columnsname)
 
 
 fig1,axs1 = plt.subplots(len(stages), len(bandnames)+1)
