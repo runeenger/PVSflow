@@ -320,7 +320,6 @@ for stage in stages :
             iperiodic=(np.arange(ishift,len(t),max(1,round(T/dtoutput)))).astype(int)
             iperiodicumax=(np.arange(round(T/dtoutput*1/2),len(t),max(1,round(T/dtoutput)))).astype(int)
             
-            print(iperiodic)
 
             plt.figure()
             plt.plot(np.max(velocity,axis=1))
@@ -467,7 +466,7 @@ for stage in stages :
 
 # save the database
 
-file_name='/home/alexandra/Documents/Python/linescan-analysis/output/disp_analysis/disp'+analysis+outputname
+file_name='../output/disp_analysis/disp'+analysis+outputname
 labelstring=''
 for d in datalabel:
     labelstring+=d+','
