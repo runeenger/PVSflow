@@ -16,25 +16,48 @@ from os import path
 
 from scipy import special
 
-plt.rcParams.update({'font.size': 18})
-
 def find_id (row):
     return row['job'].split('-id')[1]
 
-my_pal = {"baseline":"gray","stageREM": "darkorchid", "stageNREM": "mediumseagreen", "stageIS":"darkorange","stageAwakening":"blue"}
+##########################################################
+### Parameters of the script : can be modified
+##########################################################
 
-rep='/home/alexandra/Data/SleepOutput/'
+# define the folder with the simulations results for the transport analysis
+rep='../data/simulations/'
 analysis='-d7e-08-l6e-02'
 rep=rep+'intakeRandomWT10t200area'+analysis+'/'
 
+#associated diffusion coefficient
 #D=1.680000e-07
 D=6.800000e-08 #cm2/s
 
+#chose the state to plot
 stages=['baseline','stageNREM']#'stageIS',,'stageREM'
 
+#chose the frequency bands to plot
 bandnames=[ 'Card','LFVLFCard','LFVLF']
 
-titrefigure='transport_'+'_d%.1e'%D
+#name of the figure
+namefigure='transport_'+'_d%.1e'%D
+
+# output folder
+outputfolder='../output/figures/'
+
+
+#style
+
+plt.rcParams.update({'font.size': 18})
+
+my_pal = {"baseline":"gray","stageREM": "darkorchid", "stageNREM": "mediumseagreen", "stageIS":"darkorange","stageAwakening":"blue"}
+
+##########################################################
+### script
+##########################################################
+
+# Directory to store output data             
+if not os.path.exists(outputfolder):
+    os.makedirs(outputfolder)
 
 # get all the log files
 from os import listdir
@@ -142,9 +165,12 @@ for bandname in bandnames :
         xtharray=np.zeros((len(list_xth),len(spantime)))
         
         for i,xth in enumerate(list_xth) :
-            smoothedxth=savgol_filter(list_xth[i],101,3) 
+            smoothedxth=savgol_filter(list_xth[i],5,3) 
             xtharray[i,:]=np.interp(spantime,list_time[i],smoothedxth)
             plt.plot(spantime*factortime,xtharray[i,:]*1e4,c=my_pal[stage],alpha=0.1)
+            smoothedxth=savgol_filter(list_xth[i],101,3) 
+            xtharray[i,:]=np.interp(spantime,list_time[i],smoothedxth)
+            
             
         xthmean=np.median(xtharray,axis=0)
         xthq1=np.percentile(xtharray,10,axis=0)
@@ -178,8 +204,8 @@ for bandname in bandnames :
           fancybox=True, shadow=True, ncol=3)
         
             
-    plt.savefig('/home/alexandra/Documents/Python/linescan-analysis/output/images/'+titrefigure+'-'+bandname+'.png' , bbox_inches='tight') 
-    plt.savefig('/home/alexandra/Documents/Python/linescan-analysis/output/images/'+titrefigure+'-'+bandname+'.pdf' , bbox_inches='tight')
+    plt.savefig(outputfolder+namefigure+'-'+bandname+'.png' , bbox_inches='tight') 
+    plt.savefig(outputfolder+namefigure+'-'+bandname+'.pdf' , bbox_inches='tight')
     
     #plt.title(stage + ' Free diffusion 7e-8cm2/s')
     plt.show()
