@@ -1,6 +1,21 @@
-# linescan-analysis
+# Linescan-analysis
 
 Script for the post-processing of line-scan measurements of vessels and astrocyte endfoot diameter oscillations.
+
+## Setting up the computational environment
+Instalation of our analysis pipeline is based on [docker](https://www.docker.com/). The Docker
+image to be built locally by the user is defined in the [Dockerfile](https://github.com/AlexandraVallet/PVSflow/blob/master/Dockerfile). The resulting environment contains dependencies of our pipeline such as
+the standard scientific Python stack (e.g. numpy, pandas) and FEniCS, gmsh. We refer to
+the file for the specific version. To build the image (called in the the following **PVSflow**)
+locally we navigate to the `PVSflow` repository folder and launch```
+docker build --no-cache -t PVSflow` .
+```Once the build process finishes we can launch the docker container with our image as```
+docker run -it -v $(pwd):/home/fenics/shared PVSflow
+```where we have mounted the current directory to be shared with the container. That is the `$(pwd)`
+folder is accessible from within the image at `home/fenics/shared`. It is convenient if `$(pwd)`
+is `PVSflow` repository folder.From inside the docker container we finally navigate to the `PVSflow` repository folder and
+execute ```source setup.rc``` in order to put the analysis modules to Python path. At this point the pipeline scripts can
+be launched as described below.
 
 ## Usage
 
