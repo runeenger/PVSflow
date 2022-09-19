@@ -84,7 +84,7 @@ def base_commandline(lpvs=200e-4, c0init='constant', c0valuePVS=50, c0valueSAS=0
     
 
     
-    jobcommand='srun -n 1 python3 PVS_simulation.py'
+    jobcommand='srun -n 1 python3 PVS_cyclessimulation.py'
 
     jobcommand+=' -lpvs '+str(lpvs)
     jobcommand+=' -c0init '+c0init
