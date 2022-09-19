@@ -77,7 +77,8 @@ continuous={'bandname':'continuous','cutoff1':0.0,'cutoff2':0.1}
 linescanlist=['rigid lumen', 'lumen','rigid endfoot','PVS', 'endfoot','Area']
 
 # Selection of the frequency bands to analyse
-bandfreqencies=[verylowfreq,lowfreq,resp,cardiac]
+#bandfreqencies=[verylowfreq,lowfreq,resp,cardiac]
+bandfreqencies=[verylowfreq,lowfreq]
 
 
 
