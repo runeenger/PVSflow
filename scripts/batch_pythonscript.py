@@ -118,8 +118,6 @@ if __name__ == '__main__':
     if not os.path.exists('../output/supercomputer/'):
         os.makedirs('../output/supercomputer/')
 
-    if not os.path.exists(seriename):
-        os.makedirs(seriename)
         
         
     seriedirroot='../output/supercomputer/'+seriename+'/'
@@ -629,8 +627,7 @@ if __name__ == '__main__':
     if not os.path.exists('../output/supercomputer/'):
         os.makedirs('../output/supercomputer/')
 
-    if not os.path.exists(seriename):
-        os.makedirs(seriename)
+
         
         
     seriedirroot='../output/supercomputer/'+seriename+'/'
@@ -1099,8 +1096,7 @@ if __name__ == '__main__':
     if not os.path.exists('../output/supercomputer/'):
         os.makedirs('../output/supercomputer/')
 
-    if not os.path.exists(seriename):
-        os.makedirs(seriename)
+
         
         
     seriedirroot='../output/supercomputer/'+seriename+'/' 
