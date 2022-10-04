@@ -162,11 +162,15 @@ def PVS_simulation(args):
     logging.info('\n * Geometry')
     Rv = args.radius_vessel  # centimeters
     Rpvs = args.radius_pvs  # centimeters
+    aSMC=args.alpha_SMC # ratio
     L = args.length  # centimeters
+
+    
 
     logging.info('Vessel radius : %e cm' % Rv)
     logging.info('PVS radius : %e cm' % Rpvs)
     logging.info('PVS length : %e cm' % L)
+    logging.info('SMC initial area coverage : %e pc' % aSMC)
 
     # test presence of the SAS compartment on the mesh
     isSAS = args.issas
@@ -241,6 +245,12 @@ def PVS_simulation(args):
     logging.info('fi (Hz) : '+'%e '*len(fi) % tuple(fi))
     logging.info('phii (rad) : '+'%e '*len(phii) % tuple(phii))
 
+    if aSMC >= max(ai) :
+        logging.info('The area of SMC is larger than the deformation. Please chose a smaller value.')
+        logging.info('We change the SMC area to be half of free space after deformation.')
+        aSMC=(1-max(ai))/2
+        logging.info('new SMC initial area coverage : %e pc' % aSMC)
+
     logging.info('\n * Lateral BC')
     resistance = args.resistance
     logging.info('inner resistance: %e ' % resistance)
@@ -272,8 +282,8 @@ def PVS_simulation(args):
                                   
 
     # ai is the change of area
-    functionR = sqrt(Rpvs**2 -(Rpvs**2-Rv**2)*(1-sum([a*cos(2*pi*f*tn+phi) for a,f,phi in zip(ai,fi,phii)]))) # displacement
-    functionUALE=sqrt(Rpvs**2 -(Rpvs**2-Rv**2)*(1-sum([a*cos(2*pi*f*tnp1+phi) for a,f,phi in zip(ai,fi,phii)])))- sqrt(Rpvs**2 -(Rpvs**2-Rv**2)*(1-sum([a*cos(2*pi*f*tn+phi) for a,f,phi in zip(ai,fi,phii)]))) 
+    functionR = sqrt(Rpvs**2 -(Rpvs**2-Rv**2)*(1-sum([a*cos(2*pi*f*tn+phi) for a,f,phi in zip(ai,fi,phii)]))+aSMC*(Rpvs**2-Rv**2)) # displacement
+    functionUALE=sqrt(Rpvs**2 -(Rpvs**2-Rv**2)*(1-sum([a*cos(2*pi*f*tnp1+phi) for a,f,phi in zip(ai,fi,phii)]))+aSMC*(Rpvs**2-Rv**2))- sqrt(Rpvs**2 -(Rpvs**2-Rv**2)*(1-sum([a*cos(2*pi*f*tn+phi) for a,f,phi in zip(ai,fi,phii)]))+aSMC*(Rpvs**2-Rv**2)) 
         
 
     functionV = sympy.diff(functionR, tn)  # velocity
@@ -1013,6 +1023,12 @@ if __name__ == '__main__':
                            type=float,
                            default=10e-4,
                            help='PVS outer radius as rest')
+
+    my_parser.add_argument('-aSMC', '--alpha_SMC',
+                           metavar='aSMC',
+                           type=float,
+                           default=0,
+                           help='pourcentage of the initial area occupied by smooth muscle cells (to be removed from the fluid domain)')                           
 
     my_parser.add_argument('-lpvs', '--length',
                            type=float,
