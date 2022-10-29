@@ -170,7 +170,7 @@ def PVS_simulation(args):
     logging.info('Vessel radius : %e cm' % Rv)
     logging.info('PVS radius : %e cm' % Rpvs)
     logging.info('PVS length : %e cm' % L)
-    logging.info('SMC initial area coverage : %e pc' % aSMC)
+    logging.info('SMC initial area coverage : %e cm2' % aSMC)
 
     # test presence of the SAS compartment on the mesh
     isSAS = args.issas
@@ -245,11 +245,11 @@ def PVS_simulation(args):
     logging.info('fi (Hz) : '+'%e '*len(fi) % tuple(fi))
     logging.info('phii (rad) : '+'%e '*len(phii) % tuple(phii))
 
-    if aSMC >= (1-max(ai)) :
-        logging.info('The area of SMC is larger than the deformation. Please chose a smaller value.')
+    if np.pi*(Rpvs**2-Rv**2)*(1-max(ai)) <= aSMC:
+        logging.info('The area of SMC is too large and Rv become larger than Rpvs. Please chose a smaller value.')
         logging.info('We change the SMC area to be half of free space after deformation.')
-        aSMC=(1-max(ai))/2
-        logging.info('new SMC initial area coverage : %e pc' % aSMC)
+        aSMC=np.pi*(Rpvs**2-Rv**2)*(1-max(ai))/2
+        logging.info('new SMC initial area coverage : %e cm2 ' % aSMC)
 
     logging.info('\n * Lateral BC')
     resistance = args.resistance
@@ -282,8 +282,8 @@ def PVS_simulation(args):
                                   
 
     # ai is the change of area
-    functionR = sqrt(Rpvs**2 -(Rpvs**2-Rv**2)*(1-sum([a*cos(2*pi*f*tn+phi) for a,f,phi in zip(ai,fi,phii)]))+aSMC*(Rpvs**2-Rv**2)) # displacement
-    functionUALE=sqrt(Rpvs**2 -(Rpvs**2-Rv**2)*(1-sum([a*cos(2*pi*f*tnp1+phi) for a,f,phi in zip(ai,fi,phii)]))+aSMC*(Rpvs**2-Rv**2))- sqrt(Rpvs**2 -(Rpvs**2-Rv**2)*(1-sum([a*cos(2*pi*f*tn+phi) for a,f,phi in zip(ai,fi,phii)]))+aSMC*(Rpvs**2-Rv**2)) 
+    functionR = sqrt(Rpvs**2 -(Rpvs**2-Rv**2)*(1-sum([a*cos(2*pi*f*tn+phi) for a,f,phi in zip(ai,fi,phii)]))+aSMC/np.pi) # displacement
+    functionUALE=sqrt(Rpvs**2 -(Rpvs**2-Rv**2)*(1-sum([a*cos(2*pi*f*tnp1+phi) for a,f,phi in zip(ai,fi,phii)]))+aSMC/np.pi)- sqrt(Rpvs**2 -(Rpvs**2-Rv**2)*(1-sum([a*cos(2*pi*f*tn+phi) for a,f,phi in zip(ai,fi,phii)]))+aSMC/np.pi) 
         
 
     functionV = sympy.diff(functionR, tn)  # velocity
@@ -1030,7 +1030,7 @@ if __name__ == '__main__':
                            metavar='aSMC',
                            type=float,
                            default=0,
-                           help='pourcentage of the initial area occupied by smooth muscle cells (to be removed from the fluid domain)')                           
+                           help='constant cross section area occupied by the SMC (to be removed from the fluid domain)')                           
 
     my_parser.add_argument('-lpvs', '--length',
                            type=float,
@@ -1172,3 +1172,17 @@ if __name__ == '__main__':
     # Execute the PVS simulation
 
     PVS_simulation(args)
+
+
+# aSMC 50 = 6.092540578410782e-07
+
+#python3 PVS_cyclessimulation.py -lpvs 0.06 -c0init gaussian -c0valueSAS 0 -c0valuePVS 1 -sasbc scenarioA -tend 20 -toutput 0.12038539237549864 -dt 0.0037620435117343325 -r -1 -nr 8 -nl 600 -d 6.8e-08 -s 0.0002 -xi 0.03 -j disp-d7e-08-l6e-02-baseline-card-ai1em4 -ai 1e-04  -fi 8.306655652048399  -rv 0.0005244517 -rpvs 0.00081419455 -aSMC 0 -o "../output/simulations/dispersionCardiacSMC00/"
+
+#python3 PVS_cyclessimulation.py -lpvs 0.06 -c0init gaussian -c0valueSAS 0 -c0valuePVS 1 -sasbc scenarioA -tend 20 -toutput 0.12038539237549864 -dt 0.0037620435117343325 -r -1 -nr 8 -nl 600 -d 6.8e-08 -s 0.0002 -xi 0.03 -j disp-d7e-08-l6e-02-baseline-card-ai1em3 -ai 1e-03  -fi 8.306655652048399  -rv 0.0005244517 -rpvs 0.00081419455 -aSMC 0 -o "../output/simulations/dispersionCardiacSMC00/"
+
+#python3 PVS_cyclessimulation.py -lpvs 0.06 -c0init gaussian -c0valueSAS 0 -c0valuePVS 1 -sasbc scenarioA -tend 20 -toutput 0.12038539237549864 -dt 0.0037620435117343325 -r -1 -nr 8 -nl 600 -d 6.8e-08 -s 0.0002 -xi 0.03 -j disp-d7e-08-l6e-02-baseline-card-ai1em2 -ai 1e-02  -fi 8.306655652048399  -rv 0.0005244517 -rpvs 0.00081419455 -aSMC 0 -o "../output/simulations/dispersionCardiacSMC00/"
+
+#python3 PVS_cyclessimulation.py -lpvs 0.06 -c0init gaussian -c0valueSAS 0 -c0valuePVS 1 -sasbc scenarioA -tend 20 -toutput 0.12038539237549864 -dt 0.0037620435117343325 -r -1 -nr 8 -nl 600 -d 6.8e-08 -s 0.0002 -xi 0.03 -j disp-d7e-08-l6e-02-baseline-card-ai1em1 -ai 1e-01  -fi 8.306655652048399  -rv 0.0005244517 -rpvs 0.00081419455 -aSMC 0 -o "../output/simulations/dispersionCardiacSMC00/"
+
+
+#python3 PVS_cyclessimulation.py -lpvs 0.06 -c0init gaussian -c0valueSAS 0 -c0valuePVS 1 -sasbc scenarioA -tend 20 -toutput 0.12038539237549864 -dt 0.0037620435117343325 -r -1 -nr 8 -nl 600 -d 6.8e-08 -s 0.0002 -xi 0.03 -j disp-d7e-08-l6e-02-baseline-card-v40 -ai 0.0012779765644957393  -fi 8.306655652048399  -rv 0.0005244517 -rpvs 0.00081419455 -aSMC 0 -o "../output/simulations/dispersionCardiacSMC00/"
