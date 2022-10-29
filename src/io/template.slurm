@@ -21,7 +21,10 @@ mkdir -pv $workdir
 # Copy to work directory
 
 PROJECT_FOLDER=sleep
-yes|cp -ruv /cluster/home/avallet/${PROJECT_FOLDER} ${workdir}/ || echo "skip copying due to other thread"
+#yes|cp -ruv /cluster/home/avallet/${PROJECT_FOLDER} ${workdir}/ || echo "skip copying due to other thread"
+yes|cp -ruv /cluster/projects/nn9279k/Alexandra/${PROJECT_FOLDER} ${workdir}/ || echo "skip copying due to other thread"
+
+
 
 cd ${workdir}/${PROJECT_FOLDER}
 
