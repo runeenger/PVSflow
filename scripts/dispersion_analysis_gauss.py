@@ -108,10 +108,12 @@ def estimate_diff_fit(spanC,spanX,t,sigma,L) :
 rep='../data/simulations/'
 analysis='-d7e-08-l6e-02'  # chose different length or diffusion coefficient if needed
 #rep=rep+'dispersionRandomWT10t40area'+analysis+'/'
-rep=rep+'dispersionRandomveinsWT10'+analysis+'/'
+#rep=rep+'dispersionRandomveinsWT10'+analysis+'/'
+rep=rep+'dispersionSMC50WT10'+analysis+'/'
 # name of the output file
-outputname='RandomVeinsWT10.csv'
-
+#outputname='RandomVeinsWT10.csv'
+#outputname='RandomWT10.csv'
+outputname='SMC50WT10new.csv'
 
 # set a condition on time analysis (to avoid analysis when tracer reaches the boundary conditions)
 conditiontime=False
@@ -119,8 +121,9 @@ conditionalpha=False
 
 ## stages and frequency bands to analyse
 stages=['baseline','stageIS','stageNREM','stageREM','stageAwakening']
-bandnames=['card-v1e-03','card-v5e-03', 'card-v1e-02','card','resp','LF','VLF']
+#bandnames=['card-v1e-03','card-v5e-03', 'card-v1e-02','card','resp','LF','VLF']
 bandnames=['LF','VLF']
+bandnames=['card-v1e-03','card-v5e-03', 'card-v1e-02','LF','VLF']
 
 ##########################################################
 ### script
