@@ -80,9 +80,13 @@ if __name__ == '__main__':
     ### Parameters of the script : can be modified
     ##########################################################
 
+
+    #outputdir='${USERWORK}'
+    outputdir='/cluster/projects/nn9279k/Alexandra/'
+
     # We would like to cover those parameters range
     # Length of the PVS
-    spanlpvs=[400e-4,600e-4]  
+    spanlpvs=[600e-4]  
     # Molecular diffusion coefficient
     spandiffusion=[0.84e-7*2,0.068e-6]
     # Assumption for the cardiac peak velocity
@@ -262,7 +266,11 @@ if __name__ == '__main__':
                         #get properties
                         rv=sleepdata['Rv'][stage][vesselID]*1e-4 #cm
                         h0=sleepdata['h0'][stage][vesselID]*1e-4*corrfactorh0 #cm
+                        meanarea=sleepdata['area'][stage][vesselID]*corrfactorarea
+
                         rpvs=rv+h0
+                        #rpvs=np.sqrt(rv**2+meanarea*1e-8/np.pi)
+
                         fi=1/sleepdata['period'+'card'][stage][vesselID]
                         
                         
@@ -334,7 +342,7 @@ if __name__ == '__main__':
                         
                         # #write the slurm file
                         # #gaussian analysis
-                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
+                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
                         
                         # #update the list of slurm files to be launched in batch
                         slurmfiles.append(slurmfile)
@@ -343,7 +351,7 @@ if __name__ == '__main__':
                 # then we treat the measure values
             
                 # each FB separately
-                for FB in ['LF','VLF'] :
+                for FB in ['card','LF','VLF'] :
 
                     #get the vessel ID present for all freq
                     vesselid_Rv = sleepdata['Rv'][stage].keys()
@@ -363,11 +371,13 @@ if __name__ == '__main__':
                         #get properties
                         rv=sleepdata['Rv'][stage][vesselID]*1e-4 #cm
                         h0=sleepdata['h0'][stage][vesselID]*1e-4*corrfactorh0 #cm
-                        rpvs=rv+h0
-                        fi=1/sleepdata['period'+FB][stage][vesselID]
-                        
                         meanarea=sleepdata['area'][stage][vesselID]*corrfactorarea
-                    
+
+                        rpvs=rv+h0
+                        #rpvs=np.sqrt(rv**2+meanarea*1e-8/np.pi)
+
+                        fi=1/sleepdata['period'+FB][stage][vesselID]
+                                            
                     
                         amp_pvs=sleepdata['amp'+FB][stage][vesselID]*1e-4/2*corrfactorh0
                         amp_endfoot=sleepdata['amp_endfoot'+FB][stage][vesselID]*1e-4/2
@@ -475,11 +485,11 @@ if __name__ == '__main__':
                         
                         #write the slurm file
                         # gaussian analysis
-                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
+                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
 
                         
                         # intake
-                        #write_state_slurm(jobname, [fi],[ai],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=False)                              
+                        #write_state_slurm(jobname, [fi],[ai],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=False)                              
 
                         #update the list of slurm files to be launched in batch
                         slurmfiles.append(slurmfile)
@@ -506,11 +516,10 @@ if __name__ == '__main__':
                         #get properties
                         rv=sleepdata['Rv'][stage][vesselID]*1e-4 #cm
                         h0=sleepdata['h0'][stage][vesselID]*1e-4*corrfactorh0 #cm
-                        rpvs=rv+h0
-                        fi=1/sleepdata['period'+FB][stage][vesselID]
-                        
                         meanarea=sleepdata['area'][stage][vesselID]*corrfactorarea
-                    
+
+                        rpvs=rv+h0
+                        #rpvs=np.sqrt(rv**2+meanarea*1e-8/np.pi)                                          
                     
                        
                         fVLF=1/sleepdata['period'+'VLF'][stage][vesselID]
@@ -593,7 +602,7 @@ if __name__ == '__main__':
                         
                         #write the slurm file
                         # gaussian analysis
-                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
+                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
 
                         #update the list of slurm files to be launched in batch
                         slurmfiles.append(slurmfile)
@@ -735,7 +744,11 @@ if __name__ == '__main__':
                         #get properties
                         rv=sleepdata['Rv'][stage][vesselID]*1e-4 #cm
                         h0=sleepdata['h0'][stage][vesselID]*1e-4*corrfactorh0 #cm
+                        meanarea=sleepdata['area'][stage][vesselID]*corrfactorarea
+
                         rpvs=rv+h0
+                        #rpvs=np.sqrt(rv**2+meanarea*1e-8/np.pi)
+
                         fi=1/sleepdata['period'+'card'][stage][vesselID]
                         
                         
@@ -807,7 +820,7 @@ if __name__ == '__main__':
                         
                         # #write the slurm file
                         # #gaussian analysis
-                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
+                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
                         
                         # #update the list of slurm files to be launched in batch
                         slurmfiles.append(slurmfile)
@@ -816,7 +829,7 @@ if __name__ == '__main__':
                 # then we treat the measure values
             
                 # each FB separately
-                for FB in ['LF','VLF'] :
+                for FB in ['card','LF','VLF'] :
 
                     #get the vessel ID present for all freq
                     vesselid_Rv = sleepdata['Rv'][stage].keys()
@@ -836,11 +849,13 @@ if __name__ == '__main__':
                         #get properties
                         rv=sleepdata['Rv'][stage][vesselID]*1e-4 #cm
                         h0=sleepdata['h0'][stage][vesselID]*1e-4*corrfactorh0 #cm
-                        rpvs=rv+h0
-                        fi=1/sleepdata['period'+FB][stage][vesselID]
-                        
                         meanarea=sleepdata['area'][stage][vesselID]*corrfactorarea
-                    
+
+                        rpvs=rv+h0
+                        #rpvs=np.sqrt(rv**2+meanarea*1e-8/np.pi)
+
+                        fi=1/sleepdata['period'+FB][stage][vesselID]
+                                            
                     
                         amp_pvs=sleepdata['amp'+FB][stage][vesselID]*1e-4/2*corrfactorh0
                         amp_endfoot=sleepdata['amp_endfoot'+FB][stage][vesselID]*1e-4/2
@@ -948,11 +963,11 @@ if __name__ == '__main__':
                         
                         #write the slurm file
                         # gaussian analysis
-                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
+                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
 
                         
                         # intake
-                        #write_state_slurm(jobname, [fi],[ai],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=False)                              
+                        #write_state_slurm(jobname, [fi],[ai],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=False)                              
 
                         #update the list of slurm files to be launched in batch
                         slurmfiles.append(slurmfile)
@@ -979,11 +994,13 @@ if __name__ == '__main__':
                         #get properties
                         rv=sleepdata['Rv'][stage][vesselID]*1e-4 #cm
                         h0=sleepdata['h0'][stage][vesselID]*1e-4*corrfactorh0 #cm
-                        rpvs=rv+h0
-                        fi=1/sleepdata['period'+FB][stage][vesselID]
-                        
                         meanarea=sleepdata['area'][stage][vesselID]*corrfactorarea
-                    
+
+                        rpvs=rv+h0
+                        #rpvs=np.sqrt(rv**2+meanarea*1e-8/np.pi)
+
+                        fi=1/sleepdata['period'+FB][stage][vesselID]
+                                            
                     
                        
                         fVLF=1/sleepdata['period'+'VLF'][stage][vesselID]
@@ -1066,7 +1083,7 @@ if __name__ == '__main__':
                         
                         #write the slurm file
                         # gaussian analysis
-                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
+                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
 
                         #update the list of slurm files to be launched in batch
                         slurmfiles.append(slurmfile)
@@ -1091,7 +1108,8 @@ if __name__ == '__main__':
     
     
     # serie name
-    seriename='dispersionSMC50WT10'
+    seriename='dispersionSMC00WT10'
+    pcSMC=0.00
     
     # create a folder for the slurm files and the batch file
 
@@ -1238,23 +1256,47 @@ if __name__ == '__main__':
                 
                     for vesselID in vesselIDs :
                 
+                        
                     
                         jobname='disp'+'-d%.0e'%d+'-l%.0e'%lpvs+'-'+stage+'-'+'card'+'-v%.0e'%vcard+'-id'+vesselID
                         print(jobname)
                         
                         #get properties
+                        
+                        
+                        # estimate the area of the SMC from the baseline
+                        
+                        aSMC=pcSMC*sleepdata['area']['baseline'][vesselID]*1e-8
+
+
                         rv=sleepdata['Rv'][stage][vesselID]*1e-4 #cm
                         h0=sleepdata['h0'][stage][vesselID]*1e-4*corrfactorh0 #cm
+                        meanarea=sleepdata['area'][stage][vesselID]*corrfactorarea
+
                         rpvs=rv+h0
+                        #rpvs=np.sqrt(rv**2+meanarea*1e-8/np.pi)
+
+
+
                         fi=1/sleepdata['period'+'card'][stage][vesselID]
                         
                         
                         wi=2*np.pi*fi
                         
-                        ampArea=vcard/wi/lpvs*(1-aSMC)
+                        ampArea=vcard/wi/lpvs
                 
                        
                         ai=ampArea
+
+                        print("Baseline area : ",aSMC/pcSMC)
+                        print("Initial area : ",np.pi*(rpvs**2-rv**2))
+
+
+                        if np.pi*(rpvs**2-rv**2)*(1-ai) <= aSMC :
+                            print('SMC area coverage is too large')
+                            stop()
+                            #raise Error
+                            
                         
                         print('rv:',rv)
                         print('h0:',h0)
@@ -1311,13 +1353,17 @@ if __name__ == '__main__':
                         
                         if Checkdt :
                             print_checkdt(tend,dt,Noutput,toutput)
+
+
+                        
+
  
                         
                         slurmfile=jobname+'.slurm'
                         
                         # #write the slurm file
                         # #gaussian analysis
-                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False, aSMC=aSMC)                              
+                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False, aSMC=aSMC)                              
                         
                         # #update the list of slurm files to be launched in batch
                         slurmfiles.append(slurmfile)
@@ -1326,7 +1372,7 @@ if __name__ == '__main__':
                 # then we treat the measure values
             
                 # each FB separately
-                for FB in ['LF','VLF'] :
+                for FB in ['card','LF','VLF'] :
 
                     #get the vessel ID present for all freq
                     vesselid_Rv = sleepdata['Rv'][stage].keys()
@@ -1344,17 +1390,24 @@ if __name__ == '__main__':
                         print(jobname)
                         
                         #get properties
+
+                        # estimate the area of the SMC from the baseline
+                        
+                        aSMC=pcSMC*sleepdata['area']['baseline'][vesselID]*1e-8
+
+
                         rv=sleepdata['Rv'][stage][vesselID]*1e-4 #cm
                         h0=sleepdata['h0'][stage][vesselID]*1e-4*corrfactorh0 #cm
-                        rpvs=rv+h0
-                        fi=1/sleepdata['period'+FB][stage][vesselID]
-                        
                         meanarea=sleepdata['area'][stage][vesselID]*corrfactorarea
-                    
-                    
-                        amp_pvs=sleepdata['amp'+FB][stage][vesselID]*1e-4/2*corrfactorh0
-                        amp_endfoot=sleepdata['amp_endfoot'+FB][stage][vesselID]*1e-4/2
-                        amp_lumen=sleepdata['amp_lumen'+FB][stage][vesselID]*1e-4/2
+
+                        rpvs=rv+h0
+                        #rpvs=np.sqrt(rv**2+meanarea*1e-8/np.pi)
+
+
+                                           
+                        #amp_pvs=sleepdata['amp'+FB][stage][vesselID]*1e-4/2*corrfactorh0
+                        #amp_endfoot=sleepdata['amp_endfoot'+FB][stage][vesselID]*1e-4/2
+                        #amp_lumen=sleepdata['amp_lumen'+FB][stage][vesselID]*1e-4/2
                         
                         fi=1/sleepdata['period'+FB][stage][vesselID]
                         
@@ -1382,10 +1435,22 @@ if __name__ == '__main__':
                         
                         
                         # Compute area change directly from area oscilations
-                        ai=sleepdata['amp_area'+FB][stage][vesselID]/meanarea*corrfactorarea
+                        ai=sleepdata['amp_area'+FB][stage][vesselID]/meanarea
                         ai/=2
                         
                         amplituderandom.append(ai)
+
+                        # Check the SMC area is not too large
+
+                        print("Baseline area : ",aSMC/pcSMC)
+                        print("Initial area : ",np.pi*(rpvs**2-rv**2))
+
+
+                        if np.pi*(rpvs**2-rv**2)*(1-ai) <= aSMC :
+                            print('SMC area coverage is too large')
+                            stop()
+                            #raise Error
+
                         
                           
                         
@@ -1458,11 +1523,11 @@ if __name__ == '__main__':
                         
                         #write the slurm file
                         # gaussian analysis
-                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False, aSMC=aSMC)                              
+                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False, aSMC=aSMC)                              
 
                         
                         # intake
-                        #write_state_slurm(jobname, [fi],[ai],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=False)                              
+                        #write_state_slurm(jobname, [fi],[ai],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=False)                              
 
                         #update the list of slurm files to be launched in batch
                         slurmfiles.append(slurmfile)
@@ -1487,13 +1552,18 @@ if __name__ == '__main__':
                         print(jobname)
                         
                         #get properties
+
+                        # estimate the area of the SMC from the baseline
+                        
+                        aSMC=pcSMC*sleepdata['area']['baseline'][vesselID]*1e-8
+
                         rv=sleepdata['Rv'][stage][vesselID]*1e-4 #cm
                         h0=sleepdata['h0'][stage][vesselID]*1e-4*corrfactorh0 #cm
-                        rpvs=rv+h0
-                        fi=1/sleepdata['period'+FB][stage][vesselID]
-                        
                         meanarea=sleepdata['area'][stage][vesselID]*corrfactorarea
-                    
+
+                        rpvs=rv+h0
+                        #rpvs=np.sqrt(rv**2+meanarea*1e-8/np.pi)
+                                           
                     
                        
                         fVLF=1/sleepdata['period'+'VLF'][stage][vesselID]
@@ -1520,7 +1590,16 @@ if __name__ == '__main__':
                         print('f:',[fVLF,fLF])
                         print('a:',[aVLF,aLF])
     
-                                          
+                        # Check the SMC area is not too large
+
+                        print("Baseline area : ",aSMC/pcSMC)
+                        print("Initial area : ",np.pi*(rpvs**2-rv**2))
+
+
+                        if np.pi*(rpvs**2-rv**2)*(1-(aVLF+aLF)) <= aSMC :
+                            print('SMC area coverage is too large')
+                            stop()
+                            #raise Error                                        
     
                         #estimate best time parameters
                         
@@ -1576,7 +1655,7 @@ if __name__ == '__main__':
                         
                         #write the slurm file
                         # gaussian analysis
-                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False, aSMC=aSMC)                              
+                        write_state_slurm(jobname, [fi],[ai],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False, aSMC=aSMC)                              
 
                         #update the list of slurm files to be launched in batch
                         slurmfiles.append(slurmfile)
@@ -1599,7 +1678,7 @@ if __name__ == '__main__':
     #### Transport analysis 
     
     # serie name
-    seriename='transportRandomWT10'
+    seriename='transportSMC00WT10'
     
     # create a folder for the slurm files and the batch file
 
@@ -1656,10 +1735,10 @@ if __name__ == '__main__':
 
             #write the slurm file
             # gaussian analysis
-            #write_state_slurm(jobname, [0],[0],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
+            #write_state_slurm(jobname, [0],[0],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='gaussian', c0valuePVS=1, c0valueSAS=0, sigma=sigma, sasbc='scenarioA', refineleft=False)                              
                         
             # intake
-            write_state_slurm(jobname, [0],[0],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=False, sas=False)                              
+            write_state_slurm(jobname, [0],[0],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=False, sas=False)                              
 
             #update the list of slurm files to be launched in batch
             slurmfiles.append(slurmfile)
@@ -1683,11 +1762,16 @@ if __name__ == '__main__':
                        
                           
                         #get properties
+
+                        # estimate the area of the SMC from the baseline
+                        aSMC=pcSMC*sleepdata['area']['baseline'][vesselID]*1e-8
+
                         rv=sleepdata['Rv'][stage][vesselID]*1e-4 #cm
                         h0=sleepdata['h0'][stage][vesselID]*1e-4*corrfactorh0 #cm
-                        rpvs=rv+h0
-                        
                         meanarea=sleepdata['area'][stage][vesselID]*corrfactorarea
+
+                        rpvs=rv+h0
+                        #rpvs=np.sqrt(rv**2+meanarea*1e-8/np.pi)
                     
                     
                         fVLF=1/sleepdata['period'+'VLF'][stage][vesselID]
@@ -1717,7 +1801,16 @@ if __name__ == '__main__':
                         print('f:',[fVLF,fLF])
                         print('a:',[aVLF,aLF])
     
-                                          
+                        # Check the SMC area is not too large
+
+                        print("Baseline area : ",aSMC/pcSMC)
+                        print("Initial area : ",np.pi*(rpvs**2-rv**2))
+
+
+                        if np.pi*(rpvs**2-rv**2)*(1-(aVLF+aLF)) <= aSMC :
+                            print('SMC area coverage is too large')
+                            stop()
+                            #raise Error                                          
     
                         #estimate best time parameters
                         
@@ -1756,7 +1849,7 @@ if __name__ == '__main__':
                         slurmfile=jobname+'.slurm'
 
                         # intake
-                        write_state_slurm(jobname, [fVLF, fLF],[aVLF, aLF],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=False, sas=False)                              
+                        write_state_slurm(jobname, [fVLF, fLF],[aVLF, aLF],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=False, sas=False, aSMC=aSMC)                              
 
                         #update the list of slurm files to be launched in batch
                         slurmfiles.append(slurmfile)
@@ -1779,11 +1872,17 @@ if __name__ == '__main__':
                     for vesselID in vesselIDs :
                         
                         #get properties
+                        # estimate the area of the SMC from the baseline
+                        aSMC=pcSMC*sleepdata['area']['baseline'][vesselID]*1e-8
+
+
                         rv=sleepdata['Rv'][stage][vesselID]*1e-4 #cm
                         h0=sleepdata['h0'][stage][vesselID]*1e-4*corrfactorh0 #cm
-                        rpvs=rv+h0
-                        
                         meanarea=sleepdata['area'][stage][vesselID]*corrfactorarea
+
+                        rpvs=rv+h0
+                        #rpvs=np.sqrt(rv**2+meanarea*1e-8/np.pi)
+                        
                     
                     
                         fCard=1/sleepdata['period'+'card'][stage][vesselID]
@@ -1814,6 +1913,17 @@ if __name__ == '__main__':
                         print('h0:',h0)
                         print('f:',[fVLF,fLF,fCard])
                         print('a:',[aVLF,aLF,aCard])
+
+                        # Check the SMC area is not too large
+
+                        print("Baseline area : ",aSMC/pcSMC)
+                        print("Initial area : ",np.pi*(rpvs**2-rv**2))
+
+
+                        if np.pi*(rpvs**2-rv**2)*(1-(aVLF+aLF+aCard)) <= aSMC :
+                            print('SMC area coverage is too large')
+                            stop()
+                            #raise Error                         
     
                                           
     
@@ -1832,7 +1942,7 @@ if __name__ == '__main__':
                         Noutput=tend/toutput
         
                         #estiamate of the max velocity
-                        Umax=U(0, 0, aLF+aVLF, fLF, lpvs, Rv0=rv, h0=h0)
+                        Umax=U(0, 0, aCard, fCard, lpvs, Rv0=rv, h0=h0)
                         #estimate of the Peclet number
                         Pe=h0*Umax/d/2
                         # constraining velocity for the CFL condition
@@ -1851,7 +1961,7 @@ if __name__ == '__main__':
                         slurmfile=jobname+'.slurm'
 
                         # intake
-                        write_state_slurm(jobname, [fVLF, fLF,fCard],[aVLF, aLF, aCard],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=False, sas=False)                              
+                        write_state_slurm(jobname, [fVLF, fLF,fCard],[aVLF, aLF, aCard],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=False, sas=False, aSMC=aSMC)                              
 
                         #update the list of slurm files to be launched in batch
                         slurmfiles.append(slurmfile)
@@ -1875,7 +1985,16 @@ if __name__ == '__main__':
                         print('f:',[fCard])
                         print('a:',[aCard])
     
-                                          
+                        # Check the SMC area is not too large
+
+                        print("Baseline area : ",aSMC/pcSMC)
+                        print("Initial area : ",np.pi*(rpvs**2-rv**2))
+
+
+                        if np.pi*(rpvs**2-rv**2)*(1-(aCard)) <= aSMC :
+                            print('SMC area coverage is too large')
+                            stop()
+                            #raise Error                                              
     
                         #estimate best time parameters
                         
@@ -1892,7 +2011,7 @@ if __name__ == '__main__':
                         Noutput=tend/toutput
         
                         #estiamate of the max velocity
-                        Umax=U(0, 0, aLF+aVLF, fLF, lpvs, Rv0=rv, h0=h0)
+                        Umax=U(0, 0, aCard, fCard, lpvs, Rv0=rv, h0=h0)
                         #estimate of the Peclet number
                         Pe=h0*Umax/d/2
                         # constraining velocity for the CFL condition
@@ -1911,7 +2030,7 @@ if __name__ == '__main__':
                         slurmfile=jobname+'.slurm'
 
                         # intake
-                        write_state_slurm(jobname, [fCard],[aCard],rv,h0, '"${USERWORK}/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=False, sas=False)                              
+                        write_state_slurm(jobname, [fCard],[aCard],rv,h0, '"'+outputdir+'/sleepoutput/'+serie+'"',seriedir+slurmfile, lpvs=lpvs,d=d,dt=dt, toutput=toutput,tend=tend,nl=nl, nr=nr,c0init='uniform', c0valuePVS=0, c0valueSAS=1, sigma=sigma, sasbc='scenarioE', refineleft=False, sas=False, aSMC=aSMC)                              
 
                         #update the list of slurm files to be launched in batch
                         slurmfiles.append(slurmfile)

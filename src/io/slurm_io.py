@@ -19,7 +19,7 @@ def get_slurmtemplate (jobname,templatefile='../src/io/template.slurm'):
         slurm_template+='# Wall clock limit:\n'
         slurm_template+='#SBATCH --time=50:00:00\n'
         slurm_template+='#\n'
-        slurm_template+='#SBATCH --partition=bigmem\n'
+        slurm_template+='#SBATCH --partition=normal\n'
         slurm_template+='#\n'
         slurm_template+='# Memory per CPU:\n'
         slurm_template+='#SBATCH --mem-per-cpu=10G\n'
@@ -36,7 +36,7 @@ def get_slurmtemplate (jobname,templatefile='../src/io/template.slurm'):
 
 
     
-def base_commandline(lpvs=200e-4, c0init='constant', c0valuePVS=50, c0valueSAS=0, sigma=1e-4, sasbc='scenarioB', tend=800, toutput=1, dt=1e-3, r=-1, nr=8, nl=100, d=2e-7, refineleft=True, sas=False) :
+def base_commandline(lpvs=200e-4, c0init='constant', c0valuePVS=50, c0valueSAS=0, sigma=1e-4, sasbc='scenarioB', tend=800, toutput=1, dt=1e-3, r=-1, nr=8, nl=100, d=2e-7, refineleft=True, sas=False, aSMC=0) :
     """
     Create a base for the command line
 
@@ -98,6 +98,7 @@ def base_commandline(lpvs=200e-4, c0init='constant', c0valuePVS=50, c0valueSAS=0
     jobcommand+=' -nr '+str(nr)
     jobcommand+=' -nl '+str(nl)
     jobcommand+=' -d '+str(d)
+    jobcommand+=' -aSMC '+str(aSMC)
     if refineleft:
         jobcommand+=' -refineleft '+str(refineleft)
     jobcommand+=' -s '+str(sigma)
