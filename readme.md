@@ -1,9 +1,14 @@
+#PVS-Sleep-Project
+This repository includes the custom code for analyzing data and biophysical modeling in:
+
+Sleep cycle-dependent vascular dynamics and the predicted effects on perivascular cerebrospinal fluid flow and solute transport. Laura Bojarskaite, Alexandra Vallet, Daniel M. Bjørnstad, Kristin M. Gullestad Binder, Céline Cunen, Kjell Heuser, Miroslav Kuchta, Kent-Andre Mardal, Rune Enger. For derived data and analyses please see the publication.
+
 # Linescan-analysis
 
 Script for the post-processing of line-scan measurements of vessels and astrocyte endfoot diameter oscillations.
 
 ## Setting up the computational environment
-Instalation of our analysis pipeline is based on [docker](https://www.docker.com/). The Docker
+Installation of our analysis pipeline is based on [docker](https://www.docker.com/). The Docker
 image to be built locally by the user is defined in the [Dockerfile](https://github.com/AlexandraVallet/PVSflow/blob/master/Dockerfile). The resulting environment contains dependencies of our pipeline such as
 the standard scientific Python stack (e.g. numpy, pandas) and FEniCS, gmsh. We refer to
 the file for the specific version. To build the image (called in the the following **PVSflow**)
@@ -20,6 +25,7 @@ be launched as described below.
 ## Usage
 
 ### Get the data
+All data are stored at: 
 
 #### raw data (necessary for the peak to peak analysis)
 Download the raw data archive : 160322_4traces.tar.gz 
@@ -32,9 +38,21 @@ Download the statistics data archive : statistics_penetrating_arterioles_WT10.ta
 
 Untar it in the data/statistics folder
 
+These data are the input for the simulations. The R-code and input data for running the statistical analyses are provided at: 
+
 #### simulation results data (necessary for the dispersion analysis)
 
 Download the simulation results data archive : 
+
+- dispersionSMC25WT10-d2e-07-l6e-02.tar.gz
+- dispersionSMC25WT10-d7e-08-l6e-02.tar.gz
+- dispersionSMC50WT10-d2e-07-l6e-02.tar.gz
+- dispersionSMC50WT10-d7e-08-l6e-02.tar.gz
+- transportSMC25WT10-d2e-07-l6e-02.tar.gz
+- transportSMC25WT10-d7e-08-l6e-02.tar.gz
+- transportSMC50WT10-d2e-07-l6e-02.tar.gz
+- transportSMC50WT10-d7e-08-l6e-02.tar.gz
+
 - dispersionRandomWT10t40area-d2e-07-l6e-02.tar.gz
 - dispersionRandomWT10t40area-d7e-08-l6e-02.tar.gz
 - intakeRandomWT10t200area-d2e-07-l6e-02.tar.gz
